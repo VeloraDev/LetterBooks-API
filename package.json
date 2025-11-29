@@ -1,0 +1,44 @@
+{
+  "name": "letterbooks-api",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx --watch src/main.ts",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" --fix",
+    "start:prod": "node dist/main.js",
+    "start": "tsx src/main.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VeloraDev/LetterBooks-API.git"
+  },
+  "contributors": [
+    "Carlos Duarte",
+    "Bruno Alencar"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VeloraDev/LetterBooks-API/issues"
+  },
+  "homepage": "https://github.com/VeloraDev/LetterBooks-API#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.5.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  }
+}
