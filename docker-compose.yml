@@ -19,6 +19,8 @@ services:
 
   app:
     build: .
+    env_file: 
+      - .env
     container_name: letterbooks_app
     depends_on:
       db:

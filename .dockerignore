@@ -8,6 +8,7 @@ node_modules/
 
 # Build outputs (built in container)
 dist/
+generated/
 
 # Environment files
 .env*
