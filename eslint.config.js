@@ -7,8 +7,7 @@ import eslintPluginPrettier from 'eslint-plugin-prettier';
 
 export default defineConfig([
   {
-    ignores: ['eslint.config.js'],
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
+    files: ['src/**/*.{js,ts}'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {

@@ -6,6 +6,8 @@ services:
       POSTGRES_USER: ${PG_USERNAME}
       POSTGRES_PASSWORD: ${PG_PASSWORD}
       POSTGRES_DB: ${PG_DATABASE}
+    ports:
+      - '5432:5432'
     volumes:
       - db_data:/var/lib/postgresql
     healthcheck:
@@ -17,6 +19,8 @@ services:
 
   app:
     build: .
+    env_file: 
+      - .env
     container_name: letterbooks_app
     depends_on:
       db:
