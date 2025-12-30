@@ -11,7 +11,9 @@
     "lint": "eslint \"src/**/*.ts\" --fix",
     "start:prod": "node dist/src/main.js",
     "start": "tsx src/main.ts",
-    "db:deploy": "npx prisma migrate deploy"
+    "db:deploy": "npx prisma migrate deploy",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,7 @@
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.4",
     "@types/pg": "^8.16.0",
+    "@vitest/coverage-v8": "^4.0.16",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
@@ -38,7 +41,8 @@
     "prisma": "^7.2.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.48.0"
+    "typescript-eslint": "^8.48.0",
+    "vitest": "^4.0.16"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.2.0",
