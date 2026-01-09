@@ -15,8 +15,11 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "verbatimModuleSyntax": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
-  "include": ["src", "generated"],
+  "include": ["src"],
   "exclude": ["dist", "node_modules"]
 }

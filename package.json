@@ -9,7 +9,7 @@
     "dev": "tsx --watch src/main.ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\" --fix",
-    "start:prod": "node dist/src/main.js",
+    "start:prod": "node dist/main.js",
     "start": "tsx src/main.ts",
     "db:deploy": "npx prisma migrate deploy",
     "test": "vitest",
