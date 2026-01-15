@@ -22,6 +22,8 @@ export default defineConfig({
         '**/*.routes.ts',
         '**/main.ts',
         '**/app.ts',
+        '**/*.dto.ts',
+        '**/*.interface.ts',
       ],
       reportsDirectory: './coverage',
 
