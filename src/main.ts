@@ -1,5 +1,6 @@
-import { appFactory } from './app.js';
 import 'dotenv/config';
+import 'reflect-metadata';
+import { appFactory } from './app.js';
 
 const app = appFactory();
 

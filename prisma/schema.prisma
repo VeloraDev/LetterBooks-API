@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -8,9 +8,40 @@ datasource db {
 }
 
 model User {
-  id         String   @id
-  username   String   @unique
-  profileUrl String?
+  id              String            @id @default(cuid())
+  username        String            @unique
+  profileUrl      String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  emailAccount    EmailAccount?
+  providerAccount ProviderAccount[]
+}
+
+model EmailAccount {
+  id           String    @id @default(cuid())
+  userId       String    @unique
+  user         User      @relation(fields: [userId], references: [id])
+  email        String    @unique
+  passwordHash String
+  verifiedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model ProviderAccount {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  provider   Provider
+  providerId String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  @@unique([providerId, provider])
+  @@index([userId])
+}
+
+enum Provider {
+  GOOGLE
+  GITHUB
 }

@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import 'reflect-metadata';
 import { afterEach, beforeAll, vi } from 'vitest';
 
 afterEach(() => {
