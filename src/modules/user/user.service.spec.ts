@@ -34,7 +34,7 @@ describe('UserService', () => {
 
       await userService.create({ username: 'user' });
 
-      expect(repo.create).toHaveBeenCalledWith({ username: 'user' });
+      expect(repo.create).toHaveBeenCalledWith({ username: 'user' }, undefined);
     });
   });
 
