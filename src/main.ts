@@ -1,5 +1,9 @@
 import 'dotenv/config';
 import 'reflect-metadata';
+
+import './modules/user/user.container.js';
+import './modules/account/email/email-account.container.js';
+
 import { appFactory } from './app.js';
 
 const app = appFactory();
