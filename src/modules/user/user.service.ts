@@ -4,6 +4,7 @@ import type { UpdateUserDto } from './dto/update-user.dto.js';
 import { NotFoundError } from 'src/shared/errors/not-found.error.js';
 import { ApiError } from 'src/shared/errors/api.error.js';
 import type { IUserRepository } from './interfaces/user.repository.interface.js';
+import type { TransactionClient } from 'src/shared/database/transaction-client.js';
 
 @injectable()
 export class UserService {
@@ -11,9 +12,9 @@ export class UserService {
     @inject('UserRepository') private readonly userRepository: IUserRepository,
   ) {}
 
-  async create(data: CreateUserDto) {
+  async create(data: CreateUserDto, tx?: TransactionClient) {
     await this.assertUsernameAvailable(data.username);
-    return this.userRepository.create(data);
+    return this.userRepository.create(data, tx);
   }
 
   async findById(id: string) {

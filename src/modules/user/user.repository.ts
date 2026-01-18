@@ -4,11 +4,13 @@ import type { CreateUserDto } from './dto/create-user.dto.js';
 import type { UpdateUserDto } from './dto/update-user.dto.js';
 import type { User } from './interfaces/user.interface.js';
 import type { IUserRepository } from './interfaces/user.repository.interface.js';
+import type { TransactionClient } from 'src/shared/database/transaction-client.js';
 
 @injectable()
 export class UserRepository implements IUserRepository {
-  async create(data: CreateUserDto): Promise<User> {
-    return prisma.user.create({ data });
+  async create(data: CreateUserDto, tx?: TransactionClient): Promise<User> {
+    const client = tx ?? prisma;
+    return client.user.create({ data });
   }
 
   async findById(id: string): Promise<User | null> {
