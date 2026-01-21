@@ -1,5 +1,4 @@
 import { injectable } from 'tsyringe';
-import type { IEmailAccountRepository } from './interfaces/email-account.repository.interface.js';
 import type { EmailAccount } from './interfaces/email-account.interface.js';
 import { prisma } from 'src/shared/database/prisma.js';
 import type { CreateEmailAccountDto } from './dto/create-email-account.dto.js';
@@ -7,7 +6,7 @@ import type { UpdateEmailAccountDto } from './dto/update-email-account.dto.js';
 import type { TransactionClient } from 'src/shared/database/transaction-client.js';
 
 @injectable()
-export class EmailAccountRepository implements IEmailAccountRepository {
+export class EmailAccountRepository {
   async create(
     data: CreateEmailAccountDto,
     tx?: TransactionClient,

@@ -1,17 +1,17 @@
 import { inject, injectable } from 'tsyringe';
-import type { IEmailAccountRepository } from './interfaces/email-account.repository.interface.js';
 import type { CreateEmailAccountDto } from './dto/create-email-account.dto.js';
 import { ApiError } from 'src/shared/errors/api.error.js';
 import { NotFoundError } from 'src/shared/errors/not-found.error.js';
 import type { UpdateEmailAccountDto } from './dto/update-email-account.dto.js';
 import type { EmailAccount } from './interfaces/email-account.interface.js';
 import type { TransactionClient } from 'src/shared/database/transaction-client.js';
+import { EmailAccountRepository } from './email-account.repository.js';
 
 @injectable()
 export class EmailAccountService {
   constructor(
-    @inject('EmailAccountRepository')
-    private readonly emailAccountRepository: IEmailAccountRepository,
+    @inject(EmailAccountRepository)
+    private readonly emailAccountRepository: EmailAccountRepository,
   ) {}
 
   async create(
