@@ -16,7 +16,8 @@ describe('UserService', () => {
       findByUsername: vi.fn(),
       update: vi.fn(),
       remove: vi.fn(),
-    };
+    } as unknown as Mocked<UserRepository>;
+
     userService = new UserService(repo);
   });
 
