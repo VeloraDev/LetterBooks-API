@@ -4,6 +4,8 @@ import { UserService } from '../user/user.service.js';
 import type { RegisterWithEmailDto } from './dto/register-with-email.dto.js';
 import { PrismaService } from 'src/shared/database/prisma.service.js';
 import type { TransactionClient } from 'src/shared/database/transaction-client.js';
+import { HashService } from 'src/shared/services/hash.service.js';
+import type { RegisterWithEmailResponseDto } from './dto/register-with-email-response.dto.js';
 
 @injectable()
 export class AuthService {
@@ -14,32 +16,45 @@ export class AuthService {
     private readonly userService: UserService,
     @inject(PrismaService)
     private readonly prismaService: PrismaService,
+    @inject(HashService)
+    private readonly hashService: HashService,
   ) {}
 
-  async registerWithEmail(data: RegisterWithEmailDto) {
-    const result = await this.prismaService.$transaction(
-      async (tx: TransactionClient) => {
-        const user = await this.userService.create(
-          { username: data.username },
-          tx,
-        );
+  async registerWithEmail(
+    data: RegisterWithEmailDto,
+  ): Promise<RegisterWithEmailResponseDto> {
+    const result = await this.prismaService.$transaction(async (tx) => {
+      return this.createUserWithEmail(data, tx);
+    });
 
-        const emailAccount = await this.emailAccountService.create(
-          {
-            userId: user.id,
-            email: data.email,
-            passwordHash: data.password,
-          },
-          tx,
-        );
+    return {
+      id: result.id,
+      username: result.username,
+      email: result.emailAccount.email,
+      emailVerified: !!result.emailAccount.verifiedAt,
+      createdAt: result.createdAt,
+    };
+  }
 
-        return {
-          ...user,
-          emailAccount,
-        };
+  private async createUserWithEmail(
+    data: RegisterWithEmailDto,
+    tx?: TransactionClient,
+  ) {
+    const user = await this.userService.create({ username: data.username }, tx);
+
+    const passwordHash = await this.hashService.hash(data.password);
+    const emailAccount = await this.emailAccountService.create(
+      {
+        userId: user.id,
+        email: data.email,
+        passwordHash,
       },
+      tx,
     );
 
-    return result;
+    return {
+      ...user,
+      emailAccount,
+    };
   }
 }
