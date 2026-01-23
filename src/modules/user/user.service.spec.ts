@@ -16,7 +16,8 @@ describe('UserService', () => {
       findByUsername: vi.fn(),
       update: vi.fn(),
       remove: vi.fn(),
-    };
+    } as unknown as Mocked<UserRepository>;
+
     userService = new UserService(repo);
   });
 
@@ -34,7 +35,7 @@ describe('UserService', () => {
 
       await userService.create({ username: 'user' });
 
-      expect(repo.create).toHaveBeenCalledWith({ username: 'user' });
+      expect(repo.create).toHaveBeenCalledWith({ username: 'user' }, undefined);
     });
   });
 
