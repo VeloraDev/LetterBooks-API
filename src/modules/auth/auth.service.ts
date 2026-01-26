@@ -28,11 +28,11 @@ export class AuthService {
     });
 
     return {
-      id: result.id,
-      username: result.username,
+      id: result.user.id,
+      username: result.user.username,
       email: result.emailAccount.email,
       emailVerified: !!result.emailAccount.verifiedAt,
-      createdAt: result.createdAt,
+      createdAt: result.user.createdAt,
     };
   }
 
@@ -53,7 +53,7 @@ export class AuthService {
     );
 
     return {
-      ...user,
+      user,
       emailAccount,
     };
   }
