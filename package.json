@@ -31,6 +31,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@types/express": "^5.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.10.4",
     "@types/pg": "^8.16.0",
     "@vitest/coverage-v8": "^4.0.16",
@@ -50,6 +51,7 @@
     "argon2": "^0.44.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.3",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.10.0",
