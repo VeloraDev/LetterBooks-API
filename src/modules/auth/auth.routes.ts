@@ -9,5 +9,9 @@ authRouter.post(
   '/email/register',
   authController.registerByEmail.bind(authController),
 );
+authRouter.post(
+  '/email/login',
+  authController.loginByEmail.bind(authController),
+);
 
 export { authRouter };

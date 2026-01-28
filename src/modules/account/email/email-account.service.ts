@@ -60,6 +60,10 @@ export class EmailAccountService {
     return this.emailAccountRepository.findById(id);
   }
 
+  async getByEmail(email: string): Promise<EmailAccount | null> {
+    return this.emailAccountRepository.findByEmail(email);
+  }
+
   async update(id: string, data: UpdateEmailAccountDto): Promise<EmailAccount> {
     const accountExist = await this.getAccountOrThrow(id);
     if (data.email && accountExist.email !== data.email) {

@@ -3,6 +3,9 @@ import { EmailAccountService } from '../account/email/email-account.service.js';
 import type { RegisterWithEmailDto } from './dto/register-with-email.dto.js';
 import { HashService } from 'src/shared/services/hash.service.js';
 import type { RegisterWithEmailResponseDto } from './dto/register-with-email-response.dto.js';
+import type { LoginWithEmailDto } from './dto/login-with-email.dto.js';
+import { TokenService } from './token.service.js';
+import { UnauthorizedError } from 'src/shared/errors/unauthorized.error.js';
 
 @injectable()
 export class AuthService {
@@ -11,6 +14,8 @@ export class AuthService {
     private readonly emailAccountService: EmailAccountService,
     @inject(HashService)
     private readonly hashService: HashService,
+    @inject(TokenService)
+    private readonly tokenService: TokenService,
   ) {}
 
   async registerWithEmail(
@@ -27,25 +32,18 @@ export class AuthService {
     };
   }
 
-  private async createUserWithEmail(
-    data: RegisterWithEmailDto,
-    tx?: TransactionClient,
-  ) {
-    const user = await this.userService.create({ username: data.username }, tx);
+  async loginEmail(data: LoginWithEmailDto) {
+    const account = await this.emailAccountService.getByEmail(data.email);
+    if (!account) throw new UnauthorizedError('Invalid credentials');
 
-    const passwordHash = await this.hashService.hash(data.password);
-    const emailAccount = await this.emailAccountService.create(
-      {
-        userId: user.id,
-        email: data.email,
-        passwordHash,
-      },
-      tx,
+    const verify = await this.hashService.compare(
+      data.password,
+      account.passwordHash,
     );
+    if (!verify) throw new UnauthorizedError('Invalid credentials');
 
-    return {
-      user,
-      emailAccount,
-    };
+    return this.tokenService.generateToken({
+      id: account.userId,
+    });
   }
 }
