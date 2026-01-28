@@ -2,9 +2,9 @@ import { inject, injectable } from 'tsyringe';
 import type { CreateUserDto } from './dto/create-user.dto.js';
 import type { UpdateUserDto } from './dto/update-user.dto.js';
 import { NotFoundError } from 'src/shared/errors/not-found.error.js';
-import { ApiError } from 'src/shared/errors/api.error.js';
 import type { TransactionClient } from 'src/shared/database/transaction-client.js';
 import { UserRepository } from './user.repository.js';
+import { ConflictError } from 'src/shared/errors/conflict.error.js';
 
 @injectable()
 export class UserService {
@@ -48,6 +48,6 @@ export class UserService {
 
   private async assertUsernameAvailable(username: string) {
     const user = await this.userRepository.findByUsername(username);
-    if (user) throw new ApiError(409, 'Username already taken');
+    if (user) throw new ConflictError('Username already taken');
   }
 }

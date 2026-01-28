@@ -2,8 +2,8 @@ import { describe, expect, it, vi, beforeEach, type Mocked } from 'vitest';
 import type { EmailAccountRepository } from './email-account.repository.js';
 import { EmailAccountService } from './email-account.service.js';
 import type { EmailAccount } from './interfaces/email-account.interface.js';
-import { ApiError } from 'src/shared/errors/api.error.js';
 import { NotFoundError } from 'src/shared/errors/not-found.error.js';
+import { ConflictError } from 'src/shared/errors/conflict.error.js';
 
 describe('EmailAccountService', () => {
   let repo: Mocked<EmailAccountRepository>;
@@ -33,7 +33,7 @@ describe('EmailAccountService', () => {
           email: 'newuser@email.com',
           passwordHash: 'hashed-password',
         }),
-      ).rejects.toThrow(ApiError);
+      ).rejects.toThrow(ConflictError);
     });
 
     it('should crete an email account successfully when the email is available', async () => {
@@ -75,7 +75,7 @@ describe('EmailAccountService', () => {
 
       await expect(
         emailAccountService.update('any-id', { email: 'newemail@email.com' }),
-      ).rejects.toThrow(ApiError);
+      ).rejects.toThrow(ConflictError);
     });
 
     it('should update successfully when the email is available', async () => {

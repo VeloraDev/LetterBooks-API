@@ -1,6 +1,5 @@
 import { inject, injectable } from 'tsyringe';
 import type { CreateEmailAccountDto } from './dto/create-email-account.dto.js';
-import { ApiError } from 'src/shared/errors/api.error.js';
 import { NotFoundError } from 'src/shared/errors/not-found.error.js';
 import type { UpdateEmailAccountDto } from './dto/update-email-account.dto.js';
 import type { EmailAccount } from './interfaces/email-account.interface.js';
@@ -11,6 +10,7 @@ import { PrismaService } from 'src/shared/database/prisma.service.js';
 import { HashService } from 'src/shared/services/hash.service.js';
 import type { User } from 'src/modules/user/interfaces/user.interface.js';
 import type { CreateUserWithEmailAccountDto } from './dto/create-user-and-email-account.dto.js';
+import { ConflictError } from 'src/shared/errors/conflict.error.js';
 
 @injectable()
 export class EmailAccountService {
@@ -87,6 +87,6 @@ export class EmailAccountService {
 
   private async assertEmailAvailable(email: string): Promise<void> {
     const emailAccount = await this.emailAccountRepository.findByEmail(email);
-    if (emailAccount) throw new ApiError(409, 'Email already taken');
+    if (emailAccount) throw new ConflictError('Email already taken');
   }
 }
