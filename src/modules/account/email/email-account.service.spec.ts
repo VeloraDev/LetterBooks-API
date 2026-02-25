@@ -4,9 +4,15 @@ import { EmailAccountService } from './email-account.service.js';
 import type { EmailAccount } from './interfaces/email-account.interface.js';
 import { NotFoundError } from 'src/shared/errors/not-found.error.js';
 import { ConflictError } from 'src/shared/errors/conflict.error.js';
+import type { UserService } from 'src/modules/user/user.service.js';
+import type { PrismaService } from 'src/shared/database/prisma.service.js';
+import type { HashService } from 'src/shared/services/hash.service.js';
 
 describe('EmailAccountService', () => {
   let repo: Mocked<EmailAccountRepository>;
+  let userService: Mocked<UserService>;
+  let prismaService: Mocked<PrismaService>;
+  let hashService: Mocked<HashService>;
   let emailAccountService: EmailAccountService;
 
   beforeEach(() => {
@@ -18,7 +24,25 @@ describe('EmailAccountService', () => {
       remove: vi.fn(),
     } as unknown as Mocked<EmailAccountRepository>;
 
-    emailAccountService = new EmailAccountService(repo);
+    userService = {
+      create: vi.fn(),
+    } as unknown as Mocked<UserService>;
+
+    prismaService = {
+      $transaction: vi.fn(),
+    } as unknown as Mocked<PrismaService>;
+
+    hashService = {
+      hash: vi.fn(),
+      compare: vi.fn(),
+    };
+
+    emailAccountService = new EmailAccountService(
+      repo,
+      userService,
+      prismaService,
+      hashService,
+    );
   });
 
   describe('create', () => {
