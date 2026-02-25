@@ -3,11 +3,13 @@ import { errorHandler } from './shared/middlewares/error-handler.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import cookieParser from 'cookie-parser';
 import { accountRouter } from './modules/account/account.routes.js';
+import { createRateLimiter } from './shared/utils/create-rate-limiter.js';
 
 export function appFactory() {
   const app = Express();
   app.use(Express.json());
   app.use(cookieParser());
+  app.use(createRateLimiter(200, 15));
 
   app.use('/auth', authRouter);
   app.use('/accounts', accountRouter);
