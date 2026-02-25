@@ -1,11 +1,10 @@
-import type { NextFunction, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { UnauthorizedError } from 'src/shared/errors/unauthorized.error.js';
 import { container } from 'tsyringe';
 import { TokenService } from '../token.service.js';
-import type { RequestAuth } from 'src/shared/types/request-auth.type.js';
 
 export async function authMiddleware(
-  req: RequestAuth,
+  req: Request,
   res: Response,
   next: NextFunction,
 ) {
