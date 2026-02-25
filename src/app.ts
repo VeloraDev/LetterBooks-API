@@ -2,6 +2,7 @@ import Express from 'express';
 import { errorHandler } from './shared/middlewares/error-handler.js';
 import { authRouter } from './modules/auth/auth.routes.js';
 import cookieParser from 'cookie-parser';
+import { accountRouter } from './modules/account/account.routes.js';
 
 export function appFactory() {
   const app = Express();
@@ -9,6 +10,7 @@ export function appFactory() {
   app.use(cookieParser());
 
   app.use('/auth', authRouter);
+  app.use('/accounts', accountRouter);
 
   app.use(errorHandler);
 

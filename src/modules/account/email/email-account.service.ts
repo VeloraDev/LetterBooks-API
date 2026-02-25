@@ -43,11 +43,14 @@ export class EmailAccountService {
       );
 
       const passwordHash = await this.hashService.hash(data.password);
-      const account = await this.create({
-        userId: user.id,
-        email: data.email,
-        passwordHash,
-      });
+      const account = await this.create(
+        {
+          userId: user.id,
+          email: data.email,
+          passwordHash,
+        },
+        tx,
+      );
 
       return {
         user,
