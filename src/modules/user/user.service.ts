@@ -5,6 +5,7 @@ import { NotFoundError } from 'src/shared/errors/not-found.error.js';
 import type { TransactionClient } from 'src/shared/database/transaction-client.js';
 import { UserRepository } from './user.repository.js';
 import { ConflictError } from 'src/shared/errors/conflict.error.js';
+import { toEmailAccountResponse } from '../account/email/email-account.mapper.js';
 
 @injectable()
 export class UserService {
@@ -23,6 +24,18 @@ export class UserService {
 
   async findByUsername(username: string) {
     return this.userRepository.findByUsername(username);
+  }
+
+  async findWithAccounts(id: string) {
+    const user = await this.userRepository.findWithAccounts(id);
+    if (!user) throw new NotFoundError('User');
+
+    return {
+      ...user,
+      emailAccount: user.emailAccount
+        ? toEmailAccountResponse(user.emailAccount)
+        : null,
+    };
   }
 
   async update(id: string, data: UpdateUserDto) {
