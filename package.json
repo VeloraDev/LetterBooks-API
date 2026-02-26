@@ -8,11 +8,12 @@
     "build": "tsc",
     "dev": "tsx --watch src/main.ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint \"src/**/*.ts\" --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "start:prod": "node dist/main.js",
     "start": "tsx src/main.ts",
     "db:deploy": "npx prisma migrate deploy",
-    "test": "vitest",
+    "test": "vitest run",
     "coverage": "vitest run --coverage"
   },
   "repository": {

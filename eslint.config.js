@@ -7,6 +7,9 @@ import eslintPluginPrettier from 'eslint-plugin-prettier';
 
 export default defineConfig([
   {
+    ignores: ['src/generated', 'dist', 'coverage'],
+  },
+  {
     files: ['src/**/*.{js,ts}'],
     languageOptions: {
       parser: tseslint.parser,
