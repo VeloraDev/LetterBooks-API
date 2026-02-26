@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi, type Mocked } from 'vitest';
 import { UserService } from './user.service.js';
 import { UserRepository } from './user.repository.js';
-import { ApiError } from 'src/shared/errors/api.error.js';
 import { NotFoundError } from 'src/shared/errors/not-found.error.js';
 import type { User } from './interfaces/user.interface.js';
+import { ConflictError } from 'src/shared/errors/conflict.error.js';
 
 describe('UserService', () => {
   let repo: Mocked<UserRepository>;
@@ -26,7 +26,7 @@ describe('UserService', () => {
       repo.findByUsername.mockResolvedValue(makeUser({ username: 'user' }));
 
       await expect(userService.create({ username: 'user' })).rejects.toThrow(
-        ApiError,
+        ConflictError,
       );
     });
 
@@ -56,7 +56,7 @@ describe('UserService', () => {
 
       await expect(
         userService.update('any-id', { username: 'new_username' }),
-      ).rejects.toThrow(ApiError);
+      ).rejects.toThrow(ConflictError);
     });
 
     it('should update successfully when the username is available', async () => {

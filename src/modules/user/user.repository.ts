@@ -24,6 +24,13 @@ export class UserRepository {
     return this.prismaService.user.findUnique({ where: { username } });
   }
 
+  async findWithAccounts(id: string) {
+    return this.prismaService.user.findUnique({
+      where: { id },
+      include: { emailAccount: true, providerAccount: true },
+    });
+  }
+
   async update(id: string, data: UpdateUserDto): Promise<User> {
     return this.prismaService.user.update({ where: { id }, data });
   }

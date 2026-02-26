@@ -1,17 +1,28 @@
 import { inject, injectable } from 'tsyringe';
 import type { CreateEmailAccountDto } from './dto/create-email-account.dto.js';
-import { ApiError } from 'src/shared/errors/api.error.js';
 import { NotFoundError } from 'src/shared/errors/not-found.error.js';
 import type { UpdateEmailAccountDto } from './dto/update-email-account.dto.js';
 import type { EmailAccount } from './interfaces/email-account.interface.js';
 import type { TransactionClient } from 'src/shared/database/transaction-client.js';
 import { EmailAccountRepository } from './email-account.repository.js';
+import { UserService } from 'src/modules/user/user.service.js';
+import { PrismaService } from 'src/shared/database/prisma.service.js';
+import { HashService } from 'src/shared/services/hash.service.js';
+import type { User } from 'src/modules/user/interfaces/user.interface.js';
+import type { CreateUserWithEmailAccountDto } from './dto/create-user-and-email-account.dto.js';
+import { ConflictError } from 'src/shared/errors/conflict.error.js';
 
 @injectable()
 export class EmailAccountService {
   constructor(
     @inject(EmailAccountRepository)
     private readonly emailAccountRepository: EmailAccountRepository,
+    @inject(UserService)
+    private readonly userService: UserService,
+    @inject(PrismaService)
+    private readonly prismaService: PrismaService,
+    @inject(HashService)
+    private readonly hashService: HashService,
   ) {}
 
   async create(
@@ -22,8 +33,38 @@ export class EmailAccountService {
     return this.emailAccountRepository.create(data, tx);
   }
 
-  async getById(id: string) {
+  async createAccountWithUser(
+    data: CreateUserWithEmailAccountDto,
+  ): Promise<{ user: User; account: EmailAccount }> {
+    return this.prismaService.$transaction(async (tx) => {
+      const user = await this.userService.create(
+        { username: data.username },
+        tx,
+      );
+
+      const passwordHash = await this.hashService.hash(data.password);
+      const account = await this.create(
+        {
+          userId: user.id,
+          email: data.email,
+          passwordHash,
+        },
+        tx,
+      );
+
+      return {
+        user,
+        account,
+      };
+    });
+  }
+
+  async getById(id: string): Promise<EmailAccount | null> {
     return this.emailAccountRepository.findById(id);
+  }
+
+  async getByEmail(email: string): Promise<EmailAccount | null> {
+    return this.emailAccountRepository.findByEmail(email);
   }
 
   async update(id: string, data: UpdateEmailAccountDto): Promise<EmailAccount> {
@@ -49,6 +90,6 @@ export class EmailAccountService {
 
   private async assertEmailAvailable(email: string): Promise<void> {
     const emailAccount = await this.emailAccountRepository.findByEmail(email);
-    if (emailAccount) throw new ApiError(409, 'Email already taken');
+    if (emailAccount) throw new ConflictError('Email already taken');
   }
 }

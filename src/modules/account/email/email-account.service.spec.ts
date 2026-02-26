@@ -2,11 +2,17 @@ import { describe, expect, it, vi, beforeEach, type Mocked } from 'vitest';
 import type { EmailAccountRepository } from './email-account.repository.js';
 import { EmailAccountService } from './email-account.service.js';
 import type { EmailAccount } from './interfaces/email-account.interface.js';
-import { ApiError } from 'src/shared/errors/api.error.js';
 import { NotFoundError } from 'src/shared/errors/not-found.error.js';
+import { ConflictError } from 'src/shared/errors/conflict.error.js';
+import type { UserService } from 'src/modules/user/user.service.js';
+import type { PrismaService } from 'src/shared/database/prisma.service.js';
+import type { HashService } from 'src/shared/services/hash.service.js';
 
 describe('EmailAccountService', () => {
   let repo: Mocked<EmailAccountRepository>;
+  let userService: Mocked<UserService>;
+  let prismaService: Mocked<PrismaService>;
+  let hashService: Mocked<HashService>;
   let emailAccountService: EmailAccountService;
 
   beforeEach(() => {
@@ -18,7 +24,25 @@ describe('EmailAccountService', () => {
       remove: vi.fn(),
     } as unknown as Mocked<EmailAccountRepository>;
 
-    emailAccountService = new EmailAccountService(repo);
+    userService = {
+      create: vi.fn(),
+    } as unknown as Mocked<UserService>;
+
+    prismaService = {
+      $transaction: vi.fn(),
+    } as unknown as Mocked<PrismaService>;
+
+    hashService = {
+      hash: vi.fn(),
+      compare: vi.fn(),
+    };
+
+    emailAccountService = new EmailAccountService(
+      repo,
+      userService,
+      prismaService,
+      hashService,
+    );
   });
 
   describe('create', () => {
@@ -33,7 +57,7 @@ describe('EmailAccountService', () => {
           email: 'newuser@email.com',
           passwordHash: 'hashed-password',
         }),
-      ).rejects.toThrow(ApiError);
+      ).rejects.toThrow(ConflictError);
     });
 
     it('should crete an email account successfully when the email is available', async () => {
@@ -75,7 +99,7 @@ describe('EmailAccountService', () => {
 
       await expect(
         emailAccountService.update('any-id', { email: 'newemail@email.com' }),
-      ).rejects.toThrow(ApiError);
+      ).rejects.toThrow(ConflictError);
     });
 
     it('should update successfully when the email is available', async () => {
