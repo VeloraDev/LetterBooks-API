@@ -1,28 +1,22 @@
-import type { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { ApiError } from '../errors/api.error.js';
+import { flattenError, ZodError } from 'zod';
+import { sendError } from '../utils/send-error.js';
 
 export function errorHandler(
   err: unknown,
   req: Request,
   res: Response,
   _next: NextFunction,
-): void {
+): Response {
   if (err instanceof ApiError) {
-    res.status(err.statusCode).json({
-      statusCode: err.statusCode,
-      message: err.message,
-      timestamp: new Date().toISOString(),
-      path: req.url,
-      details: err.details,
-    });
-    return;
+    return sendError(req, res, err.statusCode, err.message);
   }
 
-  res.status(500).json({
-    statusCode: 500,
-    message: 'Internal Server Error',
-    timestamp: new Date().toISOString(),
-    path: req.url,
-  });
+  if (err instanceof ZodError) {
+    return sendError(req, res, 400, 'Invalid data send', flattenError(err));
+  }
+
   console.log(err);
+  return sendError(req, res, 500, 'Internal server error');
 }
