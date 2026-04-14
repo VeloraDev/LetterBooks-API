@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "./src",
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "target": "esnext",
@@ -13,11 +14,10 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
-    "baseUrl": ".",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "paths": {
-      "src/*": ["src/*"]
+      "src/*": ["./src/*"]
     }
   },
   "include": ["src"],
