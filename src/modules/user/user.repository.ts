@@ -36,6 +36,10 @@ export class UserRepository {
   }
 
   async remove(id: string): Promise<void> {
+    await this.prismaService.providerAccount.deleteMany({
+      where: { userId: id },
+    });
+    await this.prismaService.emailAccount.delete({ where: { userId: id } });
     await this.prismaService.user.delete({ where: { id } });
   }
 }
