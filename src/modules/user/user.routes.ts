@@ -2,6 +2,7 @@ import express from 'express';
 import { container } from 'tsyringe';
 import { UserController } from './user.controller.js';
 import { authMiddleware } from '../auth/middlewares/auth.middleware.js';
+import { protectedMiddleware } from 'src/shared/middlewares/protected.middleware.js';
 
 const userRouter = express.Router();
 const userController = container.resolve(UserController);
@@ -14,12 +15,12 @@ userRouter.get(
 );
 userRouter.patch(
   '/me',
-  authMiddleware,
+  protectedMiddleware,
   userController.update.bind(userController),
 );
 userRouter.delete(
   '/me',
-  authMiddleware,
+  protectedMiddleware,
   userController.remove.bind(userController),
 );
 
