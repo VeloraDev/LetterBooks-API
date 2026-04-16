@@ -13,12 +13,12 @@ userRouter.get(
   userController.getMe.bind(userController),
 );
 userRouter.patch(
-  '/',
+  '/me',
   authMiddleware,
   userController.update.bind(userController),
 );
 userRouter.delete(
-  '/',
+  '/me',
   authMiddleware,
   userController.remove.bind(userController),
 );
