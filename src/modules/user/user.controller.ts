@@ -1,7 +1,6 @@
 import { inject, injectable } from 'tsyringe';
 import { UserService } from './user.service.js';
 import { NextFunction, Request, Response } from 'express';
-import { validateAuthRequest } from 'src/shared/utils/validate-auth-request.js';
 import { updateUserSchema } from './schema/update-user.schema.js';
 import { listUsersSchema } from './schema/list-users.schema.js';
 
@@ -22,8 +21,7 @@ export class UserController {
 
   async getMe(req: Request, res: Response, next: NextFunction) {
     try {
-      validateAuthRequest(req);
-      const user = await this.userService.findByIdOrThrow(req.user.id);
+      const user = await this.userService.findByIdOrThrow(req.user!.id);
 
       return res.status(200).json(user);
     } catch (error) {
@@ -33,9 +31,8 @@ export class UserController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     try {
-      validateAuthRequest(req);
       const data = updateUserSchema.parse(req.body);
-      const updated = await this.userService.update(req.user.id, data);
+      const updated = await this.userService.update(req.user!.id, data);
 
       return res.status(200).json(updated);
     } catch (error) {
@@ -45,8 +42,7 @@ export class UserController {
 
   async remove(req: Request, res: Response, next: NextFunction) {
     try {
-      validateAuthRequest(req);
-      await this.userService.remove(req.user.id);
+      await this.userService.remove(req.user!.id);
 
       res.clearCookie('token');
       return res.status(204).json();
