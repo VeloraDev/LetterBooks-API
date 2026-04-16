@@ -39,6 +39,26 @@ export class UserService {
     };
   }
 
+  async listUsers(params: {
+    limit: number;
+    cursor?: string;
+    username?: string;
+  }) {
+    const users = await this.userRepository.findUsers(
+      params.limit,
+      params.cursor,
+      params.username,
+    );
+
+    const hasNextPage = users.length > params.limit;
+    const data = hasNextPage ? users.slice(0, -1) : users;
+
+    return {
+      data,
+      nextCursor: hasNextPage ? users[users.length - 1].id : null,
+    };
+  }
+
   async update(id: string, data: UpdateUserDto): Promise<User> {
     const userExist = await this.findByIdOrThrow(id);
     if (data.username && data.username !== userExist.username) {
