@@ -16,6 +16,7 @@ describe('UserService', () => {
       findByUsername: vi.fn(),
       update: vi.fn(),
       remove: vi.fn(),
+      findUsers: vi.fn(),
     } as unknown as Mocked<UserRepository>;
 
     userService = new UserService(repo);
@@ -36,6 +37,32 @@ describe('UserService', () => {
       await userService.create({ username: 'user' });
 
       expect(repo.create).toHaveBeenCalledWith({ username: 'user' }, undefined);
+    });
+  });
+
+  describe('list', () => {
+    it('should return nextCursor when results exceed limit', async () => {
+      const usersArr = Array.from({ length: 11 }, () =>
+        makeUser({ id: crypto.randomUUID() }),
+      );
+      repo.findUsers.mockResolvedValue(usersArr);
+
+      const list = await userService.listUsers({ limit: 10 });
+
+      expect(list.data.length).toBe(10);
+      expect(list.nextCursor).toBe(usersArr[usersArr.length - 1].id);
+    });
+
+    it('should return null nextCursor when results do not exceed limit', async () => {
+      const usersArr = Array.from({ length: 4 }, () =>
+        makeUser({ id: crypto.randomUUID() }),
+      );
+      repo.findUsers.mockResolvedValue(usersArr);
+
+      const list = await userService.listUsers({ limit: 10 });
+
+      expect(list.data.length).toBe(4);
+      expect(list.nextCursor).toBe(null);
     });
   });
 
@@ -63,9 +90,9 @@ describe('UserService', () => {
       repo.findById.mockResolvedValue(makeUser({ username: 'old_username' }));
       repo.findByUsername.mockResolvedValue(null);
 
-      await userService.update('any=id', { username: 'new_username' });
+      await userService.update('any-id', { username: 'new_username' });
 
-      expect(repo.update).toHaveBeenCalledWith('any=id', {
+      expect(repo.update).toHaveBeenCalledWith('any-id', {
         username: 'new_username',
       });
     });
