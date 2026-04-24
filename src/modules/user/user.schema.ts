@@ -1,4 +1,11 @@
 import z from 'zod';
+export const usernameSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .regex(/^[a-z0-9._-]+$/, 'Invalid username')
+  .min(3)
+  .max(30);
 
 export const listUsersSchema = z.object({
   limit: z.coerce.number().int().positive().default(10),
@@ -6,15 +13,15 @@ export const listUsersSchema = z.object({
   username: z.string().optional(),
 });
 
+export const createUserSchema = z.object({
+  username: usernameSchema,
+});
+
+export type CreateUserDto = z.infer<typeof createUserSchema>;
+
 export const updateUserSchema = z
   .object({
-    username: z
-      .string()
-      .trim()
-      .toLowerCase()
-      .regex(/^[a-z0-9._-]+$/, 'Invalid username')
-      .min(3)
-      .max(30),
+    username: usernameSchema,
   })
   .partial()
   .refine((data) => Object.keys(data).length > 0, {

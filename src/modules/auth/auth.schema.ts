@@ -1,4 +1,5 @@
 import z from 'zod';
+import { usernameSchema } from '../user/user.schema.js';
 
 export const loginWithEmailSchema = z.object({
   email: z.email(),
@@ -8,13 +9,7 @@ export const loginWithEmailSchema = z.object({
 export type LoginWithEmailDto = z.infer<typeof loginWithEmailSchema>;
 
 export const registerWithEmailSchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .regex(/^[a-z0-9._-]+$/, 'Invalid username')
-    .min(3)
-    .max(30),
+  username: usernameSchema,
   email: z.email(),
   password: z.string().min(8).max(100),
 });
