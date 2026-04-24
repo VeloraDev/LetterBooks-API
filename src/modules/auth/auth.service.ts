@@ -1,11 +1,10 @@
 import { inject, injectable } from 'tsyringe';
 import { EmailAccountService } from '../account/email/email-account.service.js';
-import type { RegisterWithEmailDto } from './dto/register-with-email.dto.js';
 import { HashService } from 'src/shared/services/hash.service.js';
 import type { RegisterWithEmailResponseDto } from './dto/register-with-email-response.dto.js';
-import type { LoginWithEmailDto } from './dto/login-with-email.dto.js';
 import { TokenService } from './token.service.js';
 import { UnauthorizedError } from 'src/shared/errors/unauthorized.error.js';
+import { LoginWithEmailDto, RegisterWithEmailDto } from './auth.schema.js';
 
 @injectable()
 export class AuthService {
