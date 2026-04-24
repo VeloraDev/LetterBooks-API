@@ -1,9 +1,8 @@
 import { PrismaService } from 'src/shared/database/prisma.service.js';
 import { inject, injectable } from 'tsyringe';
-import type { CreateUserDto } from './dto/create-user.dto.js';
-import type { UpdateUserDto } from './dto/update-user.dto.js';
 import type { User } from './interfaces/user.interface.js';
 import type { TransactionClient } from 'src/shared/database/transaction-client.js';
+import { CreateUserDto, UpdateUserDto } from './user.schema.js';
 
 @injectable()
 export class UserRepository {

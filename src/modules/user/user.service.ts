@@ -4,9 +4,8 @@ import { UserRepository } from './user.repository.js';
 import { ConflictError } from 'src/shared/errors/conflict.error.js';
 import { toEmailAccountResponse } from '../account/email/email-account.mapper.js';
 import { User } from './interfaces/user.interface.js';
-import { CreateUserDto } from './dto/create-user.dto.js';
-import { UpdateUserDto } from './dto/update-user.dto.js';
 import { TransactionClient } from 'src/shared/database/transaction-client.js';
+import { CreateUserDto, UpdateUserDto } from './user.schema.js';
 
 @injectable()
 export class UserService {
