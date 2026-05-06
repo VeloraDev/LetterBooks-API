@@ -1,22 +1,31 @@
 import { inject, injectable } from 'tsyringe';
-import { UserService } from '../user/user.service.js';
 import { NextFunction, Request, Response } from 'express';
+import { AccountService } from './account.service.js';
 
 @injectable()
 export class AccountController {
   constructor(
-    @inject(UserService)
-    private readonly userService: UserService,
+    @inject(AccountService)
+    private readonly accountService: AccountService,
   ) {}
 
   async showAccounts(req: Request, res: Response, next: NextFunction) {
     try {
-      const userWithAccounts = await this.userService.findWithAccounts(
+      const userWithAccounts = await this.accountService.findAccounts(
         req.user!.id,
       );
 
       res.status(200).json(userWithAccounts);
       return;
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async removeEmailAccount(req: Request, res: Response, next: NextFunction) {
+    try {
+      await this.accountService.removeEmailAccount(req.user!.id);
+      res.status(204).json();
     } catch (error) {
       next(error);
     }
