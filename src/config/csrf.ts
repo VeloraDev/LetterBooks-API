@@ -1,9 +1,9 @@
 import { doubleCsrf } from 'csrf-csrf';
-import { getCsfrSecret } from './constants.js';
+import { getCsrfSecret } from './constants.js';
 import { baseCookiesConfig } from './cookies.js';
 
 export const { generateCsrfToken, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => getCsfrSecret(),
+  getSecret: () => getCsrfSecret(),
   getSessionIdentifier: (req) => {
     return req.user!.id;
   },

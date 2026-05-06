@@ -21,9 +21,9 @@ authRouter.post(
   authController.loginByEmail.bind(authController),
 );
 authRouter.get(
-  '/csfr',
+  '/csrf',
   authMiddleware,
-  authController.getCsfrToken.bind(authController),
+  authController.getCsrfToken.bind(authController),
 );
 
 export { authRouter };

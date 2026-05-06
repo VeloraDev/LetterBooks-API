@@ -16,6 +16,6 @@ export function getJwtSecret() {
   return requireEnv('JWT_SECRET');
 }
 
-export function getCsfrSecret() {
-  return requireEnv('CSFR_SECRET');
+export function getCsrfSecret() {
+  return requireEnv('CSRF_SECRET');
 }

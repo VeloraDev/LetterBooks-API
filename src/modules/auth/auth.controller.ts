@@ -39,11 +39,11 @@ export class AuthController {
     }
   }
 
-  async getCsfrToken(req: Request, res: Response, next: NextFunction) {
+  async getCsrfToken(req: Request, res: Response, next: NextFunction) {
     try {
-      const csfrToken = generateCsrfToken(req, res);
+      const csrfToken = generateCsrfToken(req, res);
 
-      res.status(200).json({ csfrToken });
+      res.status(200).json({ csrfToken });
     } catch (error) {
       next(error);
     }
