@@ -8,6 +8,7 @@ import { EmailAccount } from './interfaces/email-account.interface.js';
 import { EmailAccountResponseDto } from './dto/email-account-response.dto.js';
 import { ProviderAccountRepository } from './repositories/provider-account.repository.js';
 import { toEmailAccountResponse } from './account.mapper.js';
+import { ProviderAccount } from 'src/generated/prisma/client.js';
 
 @injectable()
 export class AccountService {
@@ -46,5 +47,20 @@ export class AccountService {
 
   async getEmailAccountByEmail(email: string): Promise<EmailAccount | null> {
     return this.emailAccountRepository.findByEmail(email);
+  }
+
+  async findAccounts(userId: string): Promise<{
+    emailAccount: EmailAccountResponseDto | null;
+    providerAccounts: ProviderAccount[];
+  }> {
+    const [emailAccount, providerAccounts] = await Promise.all([
+      this.emailAccountRepository.findByUserId(userId),
+      this.providerAccountRepository.findByUserId(userId),
+    ]);
+
+    return {
+      emailAccount: emailAccount ? toEmailAccountResponse(emailAccount) : null,
+      providerAccounts,
+    };
   }
 }
