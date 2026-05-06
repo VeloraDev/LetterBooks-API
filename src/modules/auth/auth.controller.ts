@@ -1,8 +1,12 @@
 import { inject, injectable } from 'tsyringe';
 import { AuthService } from './auth.service.js';
 import type { NextFunction, Request, Response } from 'express';
-import { registerWithEmailSchema } from './schema/register-with-email.schema.js';
-import { loginWithEmailSchema } from './schema/login-with-email.schema.js';
+import { baseCookiesConfig } from 'src/config/cookies.js';
+import { generateCsrfToken } from 'src/config/csrf.js';
+import {
+  loginWithEmailSchema,
+  registerWithEmailSchema,
+} from './auth.schema.js';
 
 @injectable()
 export class AuthController {
@@ -26,10 +30,20 @@ export class AuthController {
       const token = await this.authService.loginEmail(data);
 
       res.cookie('token', token, {
-        httpOnly: true,
+        ...baseCookiesConfig,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       res.status(200).json({ message: 'Login successful' });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getCsrfToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      const csrfToken = generateCsrfToken(req, res);
+
+      res.status(200).json({ csrfToken });
     } catch (error) {
       next(error);
     }

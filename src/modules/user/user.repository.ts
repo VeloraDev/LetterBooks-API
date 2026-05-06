@@ -1,9 +1,8 @@
 import { PrismaService } from 'src/shared/database/prisma.service.js';
 import { inject, injectable } from 'tsyringe';
-import type { CreateUserDto } from './dto/create-user.dto.js';
-import type { UpdateUserDto } from './dto/update-user.dto.js';
 import type { User } from './interfaces/user.interface.js';
 import type { TransactionClient } from 'src/shared/database/transaction-client.js';
+import { CreateUserDto, UpdateUserDto } from './user.schema.js';
 
 @injectable()
 export class UserRepository {
@@ -31,11 +30,41 @@ export class UserRepository {
     });
   }
 
+  async findUsers(limit: number, cursor?: string, username?: string) {
+    return this.prismaService.user.findMany({
+      take: limit + 1,
+      where: username
+        ? {
+            username: {
+              contains: username,
+              mode: 'insensitive',
+            },
+          }
+        : undefined,
+
+      ...(cursor && {
+        cursor: { id: cursor },
+        skip: 1,
+      }),
+
+      orderBy: [{ username: 'asc' }, { id: 'asc' }],
+    });
+  }
+
   async update(id: string, data: UpdateUserDto): Promise<User> {
     return this.prismaService.user.update({ where: { id }, data });
   }
 
   async remove(id: string): Promise<void> {
+    await Promise.all([
+      this.prismaService.providerAccount.deleteMany({
+        where: { userId: id },
+      }),
+      this.prismaService.emailAccount.deleteMany({
+        where: { userId: id },
+      }),
+    ]);
+
     await this.prismaService.user.delete({ where: { id } });
   }
 }

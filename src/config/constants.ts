@@ -15,3 +15,7 @@ export function getDatabaseUrl() {
 export function getJwtSecret() {
   return requireEnv('JWT_SECRET');
 }
+
+export function getCsrfSecret() {
+  return requireEnv('CSRF_SECRET');
+}

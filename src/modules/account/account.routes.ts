@@ -9,5 +9,9 @@ const accountController = container.resolve(AccountController);
 
 accountRouter.use(authMiddleware);
 accountRouter.get('/', accountController.showAccounts.bind(accountController));
+accountRouter.delete(
+  '/email',
+  accountController.removeEmailAccount.bind(accountController),
+);
 
 export { accountRouter };
