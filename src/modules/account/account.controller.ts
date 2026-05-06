@@ -21,4 +21,13 @@ export class AccountController {
       next(error);
     }
   }
+
+  async removeEmailAccount(req: Request, res: Response, next: NextFunction) {
+    try {
+      await this.accountService.removeEmailAccount(req.user!.id);
+      res.status(204).json();
+    } catch (error) {
+      next(error);
+    }
+  }
 }

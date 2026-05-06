@@ -9,6 +9,7 @@ import { EmailAccountResponseDto } from './dto/email-account-response.dto.js';
 import { ProviderAccountRepository } from './repositories/provider-account.repository.js';
 import { toEmailAccountResponse } from './account.mapper.js';
 import { ProviderAccount } from 'src/generated/prisma/client.js';
+import { ApiError } from 'src/shared/errors/api.error.js';
 
 @injectable()
 export class AccountService {
@@ -47,6 +48,17 @@ export class AccountService {
 
   async getEmailAccountByEmail(email: string): Promise<EmailAccount | null> {
     return this.emailAccountRepository.findByEmail(email);
+  }
+
+  async removeEmailAccount(userId: string) {
+    const providerAccounts =
+      await this.providerAccountRepository.findByUserId(userId);
+
+    if (providerAccounts.length === 0) {
+      throw new ApiError(400, 'Cannot remove the last login method');
+    }
+
+    await this.emailAccountRepository.remove(userId);
   }
 
   async findAccounts(userId: string): Promise<{
