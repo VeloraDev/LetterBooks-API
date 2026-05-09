@@ -4,7 +4,8 @@ import { UserRepository } from './user.repository.js';
 import { ConflictError } from 'src/shared/errors/conflict.error.js';
 import { User } from './interfaces/user.interface.js';
 import { TransactionClient } from 'src/shared/database/transaction-client.js';
-import { CreateUserDto, UpdateUserDto } from './user.schema.js';
+import { CreateUserDto, ListUsersDto, UpdateUserDto } from './user.schema.js';
+import { OffsetPaginatedResult } from 'src/shared/types/offset-paginated-result.type.js';
 
 @injectable()
 export class UserService {
@@ -25,23 +26,23 @@ export class UserService {
     return this.userRepository.findByUsername(username);
   }
 
-  async listUsers(params: {
-    limit: number;
-    cursor?: string;
-    username?: string;
-  }) {
-    const users = await this.userRepository.findUsers(
+  async listUsers(params: ListUsersDto): Promise<OffsetPaginatedResult<User>> {
+    const skip = (params.page - 1) * params.limit;
+    const result = await this.userRepository.findUsersPaginated(
       params.limit,
-      params.cursor,
+      params.sortBy,
+      skip,
       params.username,
     );
 
-    const hasNextPage = users.length > params.limit;
-    const data = hasNextPage ? users.slice(0, -1) : users;
+    const totalPages = Math.ceil(result.count / params.limit);
 
     return {
-      data,
-      nextCursor: hasNextPage ? users[users.length - 1].id : null,
+      data: result.items,
+      page: params.page,
+      limit: params.limit,
+      total: result.count,
+      totalPages,
     };
   }
 

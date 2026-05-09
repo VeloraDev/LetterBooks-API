@@ -2,7 +2,11 @@ import { PrismaService } from 'src/shared/database/prisma.service.js';
 import { inject, injectable } from 'tsyringe';
 import type { User } from './interfaces/user.interface.js';
 import type { TransactionClient } from 'src/shared/database/transaction-client.js';
-import { CreateUserDto, UpdateUserDto } from './user.schema.js';
+import {
+  UserOrderByWithRelationInput,
+  UserWhereInput,
+} from 'src/generated/prisma/models.js';
+import { CreateUserDto, UpdateUserDto, UserSortBy } from './user.schema.js';
 
 @injectable()
 export class UserRepository {
@@ -30,25 +34,32 @@ export class UserRepository {
     });
   }
 
-  async findUsers(limit: number, cursor?: string, username?: string) {
-    return this.prismaService.user.findMany({
-      take: limit + 1,
-      where: username
-        ? {
-            username: {
-              contains: username,
-              mode: 'insensitive',
-            },
-          }
-        : undefined,
+  async findUsersPaginated(
+    limit: number,
+    sortBy: UserSortBy,
+    skip: number,
+    username?: string,
+  ): Promise<{ items: User[]; count: number }> {
+    const where: UserWhereInput | undefined = username
+      ? {
+          username: {
+            contains: username,
+            mode: 'insensitive',
+          },
+        }
+      : undefined;
 
-      ...(cursor && {
-        cursor: { id: cursor },
-        skip: 1,
+    const [items, count] = await Promise.all([
+      this.prismaService.user.findMany({
+        where,
+        take: limit,
+        skip,
+        orderBy: mapOrderBy(sortBy),
       }),
+      this.prismaService.user.count({ where }),
+    ]);
 
-      orderBy: [{ username: 'asc' }, { id: 'asc' }],
-    });
+    return { items, count };
   }
 
   async update(id: string, data: UpdateUserDto): Promise<User> {
@@ -66,5 +77,14 @@ export class UserRepository {
     ]);
 
     await this.prismaService.user.delete({ where: { id } });
+  }
+}
+
+function mapOrderBy(sort: UserSortBy): UserOrderByWithRelationInput {
+  switch (sort) {
+    case 'newest':
+      return { createdAt: 'desc' };
+    case 'username':
+      return { username: 'asc' };
   }
 }
