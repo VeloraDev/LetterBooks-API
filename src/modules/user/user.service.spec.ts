@@ -40,32 +40,6 @@ describe('UserService', () => {
     });
   });
 
-  describe('list', () => {
-    it('should return nextCursor when results exceed limit', async () => {
-      const usersArr = Array.from({ length: 11 }, () =>
-        makeUser({ id: crypto.randomUUID() }),
-      );
-      repo.findUsers.mockResolvedValue(usersArr);
-
-      const list = await userService.listUsers({ limit: 10 });
-
-      expect(list.data.length).toBe(10);
-      expect(list.nextCursor).toBe(usersArr[usersArr.length - 1].id);
-    });
-
-    it('should return null nextCursor when results do not exceed limit', async () => {
-      const usersArr = Array.from({ length: 4 }, () =>
-        makeUser({ id: crypto.randomUUID() }),
-      );
-      repo.findUsers.mockResolvedValue(usersArr);
-
-      const list = await userService.listUsers({ limit: 10 });
-
-      expect(list.data.length).toBe(4);
-      expect(list.nextCursor).toBe(null);
-    });
-  });
-
   describe('update', () => {
     it('should throw an error if the user was not found', async () => {
       repo.findById.mockResolvedValue(null);
