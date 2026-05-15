@@ -8,13 +8,17 @@ datasource db {
 }
 
 model User {
-  id              String            @id @default(cuid())
-  username        String            @unique
-  profileUrl      String?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id         String   @id @default(cuid())
+  username   String   @unique
+  profileUrl String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
   emailAccount    EmailAccount?
   providerAccount ProviderAccount[]
+
+  followers Follow[] @relation("UserFollowedBy")
+  following Follow[] @relation("UserFollowers")
 }
 
 model EmailAccount {
@@ -44,4 +48,18 @@ model ProviderAccount {
 enum Provider {
   GOOGLE
   GITHUB
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("UserFollowers", fields: [followerId], references: [id])
+  following User @relation("UserFollowedBy", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
 }
