@@ -62,13 +62,17 @@ export class UserService {
 
   async findByIdOrThrow(id: string): Promise<User> {
     const user = await this.userRepository.findById(id);
-    if (!user) throw new NotFoundError('User');
+    if (!user) throw new NotFoundError('USER_NOT_FOUND', 'User not found');
 
     return user;
   }
 
   private async assertUsernameAvailable(username: string): Promise<void> {
     const user = await this.userRepository.findByUsername(username);
-    if (user) throw new ConflictError('Username already taken');
+    if (user)
+      throw new ConflictError(
+        'USERNAME_ALREADY_TAKEN',
+        'Username already taken',
+      );
   }
 }

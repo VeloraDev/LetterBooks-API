@@ -22,14 +22,20 @@ export class FollowService {
 
   async follow(userId: string, followingId: string): Promise<FollowStats> {
     if (userId === followingId) {
-      throw new ConflictError('Cannot follow yourself');
+      throw new ConflictError(
+        'CANNOT_FOLLOW_YOURSELF',
+        'Cannot follow yourself',
+      );
     }
 
     await this.userService.findByIdOrThrow(followingId);
 
     const follow = await this.followRepository.findFollow(userId, followingId);
     if (follow) {
-      throw new ConflictError('Already following this user');
+      throw new ConflictError(
+        'ALREADY_FOLLOWING',
+        'Already following this user',
+      );
     }
 
     await this.followRepository.create(userId, followingId);
@@ -40,10 +46,13 @@ export class FollowService {
   async unfollow(userId: string, followingId: string): Promise<FollowStats> {
     const result = await this.followRepository.remove(userId, followingId);
     if (!result) {
-      throw new ConflictError('You are not following this user');
+      throw new ConflictError(
+        'NOT_FOLLOWING',
+        'You are not following this user',
+      );
     }
 
-    return await this.getFollowStats(followingId);
+    return this.getFollowStats(followingId);
   }
 
   async removeFollower(
@@ -52,7 +61,7 @@ export class FollowService {
   ): Promise<FollowStats> {
     const result = await this.followRepository.remove(followerId, userId);
     if (!result) {
-      throw new ConflictError('The user is not a follower');
+      throw new ConflictError('NOT_FOLLOWER', 'The user is not a follower');
     }
 
     return this.getFollowStats(userId);

@@ -11,11 +11,11 @@ export function errorHandler(
   _next: NextFunction,
 ): Response {
   if (err instanceof ApiError) {
-    return sendError(req, res, err.statusCode, err.message);
+    return sendError(req, res, err.statusCode, err.code, err.message);
   }
 
   if (err?.code === 'EBADCSRFTOKEN') {
-    return sendError(req, res, 403, 'Invalid CSRF Token');
+    return sendError(req, res, 403, 'INVALID_CSRF_TOKEN', 'Invalid CSRF Token');
   }
 
   if (err instanceof ZodError) {
@@ -23,7 +23,6 @@ export function errorHandler(
 
     err.issues.forEach((error) => {
       const field = error.path.length > 0 ? error.path.join('.') : 'formError';
-
       if (!errors[field]) {
         errors[field] = [];
       }
@@ -31,9 +30,22 @@ export function errorHandler(
       errors[field].push(error.message);
     });
 
-    return sendError(req, res, 400, 'Invalid data send', errors);
+    return sendError(
+      req,
+      res,
+      400,
+      'VALIDATION_ERROR',
+      'Invalid data send',
+      errors,
+    );
   }
 
   console.log(err);
-  return sendError(req, res, 500, 'Internal server error');
+  return sendError(
+    req,
+    res,
+    500,
+    'INTERNAL_SERVER_ERROR',
+    'Internal server error',
+  );
 }
