@@ -40,6 +40,10 @@ export function errorHandler(
     );
   }
 
+  if (err instanceof SyntaxError) {
+    return sendError(req, res, 400, 'INVALID_JSON', 'Malformated json body');
+  }
+
   console.log(err);
   return sendError(
     req,
