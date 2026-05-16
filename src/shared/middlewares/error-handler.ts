@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ApiError } from '../errors/api.error.js';
-import { flattenError, ZodError } from 'zod';
+import { ZodError } from 'zod';
 import { sendError } from '../utils/send-error.js';
 
 export function errorHandler(
@@ -19,7 +19,19 @@ export function errorHandler(
   }
 
   if (err instanceof ZodError) {
-    return sendError(req, res, 400, 'Invalid data send', flattenError(err));
+    const errors: Record<string, string[]> = {};
+
+    err.issues.forEach((error) => {
+      const field = error.path.length > 0 ? error.path.join('.') : 'formError';
+
+      if (!errors[field]) {
+        errors[field] = [];
+      }
+
+      errors[field].push(error.message);
+    });
+
+    return sendError(req, res, 400, 'Invalid data send', errors);
   }
 
   console.log(err);
