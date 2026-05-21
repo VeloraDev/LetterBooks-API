@@ -6,6 +6,12 @@ export function createRateLimiter(limit: number, windowMinutes: number) {
     windowMs: windowMinutes * 60 * 1000,
     limit,
     handler: (req, res, next) =>
-      next(new ApiError(429, 'Too many requests, try again later')),
+      next(
+        new ApiError(
+          429,
+          'TOO_MANY_REQUESTS',
+          'Too many requests, try again later',
+        ),
+      ),
   });
 }

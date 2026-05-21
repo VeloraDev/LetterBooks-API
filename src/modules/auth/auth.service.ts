@@ -51,13 +51,17 @@ export class AuthService {
     const account = await this.accountService.getEmailAccountByEmail(
       data.email,
     );
-    if (!account) throw new UnauthorizedError('Invalid credentials');
+    if (!account) {
+      throw new UnauthorizedError('INVALID_CREDENTIALS', 'Invalid credentials');
+    }
 
     const verify = await this.hashService.compare(
       data.password,
       account.passwordHash,
     );
-    if (!verify) throw new UnauthorizedError('Invalid credentials');
+    if (!verify) {
+      throw new UnauthorizedError('INVALID_CREDENTIALS', 'Invalid credentials');
+    }
 
     return this.tokenService.generateToken({
       id: account.userId,
