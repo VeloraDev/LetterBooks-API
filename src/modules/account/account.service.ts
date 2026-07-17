@@ -30,7 +30,7 @@ export class AccountService {
       data.email,
     );
     if (emailExist) {
-      throw new ConflictError('Email already taken');
+      throw new ConflictError('EMAIL_ALREADY_TAKEN', 'Email already taken');
     }
 
     const passwordHash = await this.hashService.hash(data.password);
@@ -55,7 +55,11 @@ export class AccountService {
       await this.providerAccountRepository.findByUserId(userId);
 
     if (providerAccounts.length === 0) {
-      throw new ApiError(400, 'Cannot remove the last login method');
+      throw new ApiError(
+        400,
+        'CANNOT_REMOVE_LAST_LOGIN_METHOD',
+        'You cannot remove the last login method',
+      );
     }
 
     await this.emailAccountRepository.remove(userId);
