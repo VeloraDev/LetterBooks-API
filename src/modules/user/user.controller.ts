@@ -1,7 +1,8 @@
 import { inject, injectable } from 'tsyringe';
 import { UserService } from './user.service.js';
 import { NextFunction, Request, Response } from 'express';
-import { listUsersSchema, updateUserSchema } from './user.schema.js';
+import { listUsersSchema } from './dto/list-user.dto.js';
+import { updateUserSchema } from './dto/update-user.dto.js';
 
 @injectable()
 export class UserController {

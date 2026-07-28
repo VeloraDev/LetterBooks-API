@@ -3,10 +3,8 @@ import { AuthService } from './auth.service.js';
 import type { NextFunction, Request, Response } from 'express';
 import { baseCookiesConfig } from 'src/config/cookies.js';
 import { generateCsrfToken } from 'src/config/csrf.js';
-import {
-  loginWithEmailSchema,
-  registerWithEmailSchema,
-} from './auth.schema.js';
+import { registerWithEmailSchema } from './dto/register-email.dto.js';
+import { loginWithEmailSchema } from './dto/login-email.dto.js';
 
 @injectable()
 export class AuthController {

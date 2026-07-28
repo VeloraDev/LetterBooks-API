@@ -10,7 +10,12 @@ export async function authMiddleware(
   next: NextFunction,
 ) {
   const token: string = req.cookies['token'];
-  if (!token) throw new UnauthorizedError('AUTH_REQUIRED', 'Auth requrired');
+  if (!token) {
+    throw new UnauthorizedError(
+      'MISSING_AUTH_TOKEN',
+      'Authentication token is required',
+    );
+  }
 
   try {
     const tokenService = container.resolve(TokenService);
