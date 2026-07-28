@@ -2,12 +2,13 @@ import { inject, injectable } from 'tsyringe';
 import { HashService } from 'src/shared/services/hash.service.js';
 import { TokenService } from './token.service.js';
 import { UnauthorizedError } from 'src/shared/errors/unauthorized.error.js';
-import { LoginWithEmailDto, RegisterWithEmailDto } from './auth.schema.js';
+import { LoginWithEmailDto } from 'src/modules/auth/dto/login-email.dto.js';
 import { AccountService } from '../account/account.service.js';
 import { PrismaService } from 'src/shared/database/prisma.service.js';
 import { UserService } from '../user/user.service.js';
 import { User } from '../user/interfaces/user.interface.js';
 import { EmailAccountResponseDto } from '../account/dto/email-account-response.dto.js';
+import { RegisterWithEmailDto } from './dto/register-email.dto.js';
 
 @injectable()
 export class AuthService {
@@ -30,7 +31,7 @@ export class AuthService {
     const userWithAccount = await this.prismaService.$transaction(
       async (tx) => {
         const user = await this.userService.create(
-          { username: data.username },
+          { username: data.username, bio: data.bio },
           tx,
         );
 

@@ -94,6 +94,7 @@ function makeUser(override?: Partial<User>): User {
     id: 'any-id',
     username: 'default',
     profileUrl: null,
+    bio: null,
     createdAt: new Date(),
     updatedAt: new Date(),
     ...override,

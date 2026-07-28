@@ -4,8 +4,10 @@ import { UserRepository } from './user.repository.js';
 import { ConflictError } from 'src/shared/errors/conflict.error.js';
 import { User } from './interfaces/user.interface.js';
 import { TransactionClient } from 'src/shared/database/transaction-client.js';
-import { CreateUserDto, ListUsersDto, UpdateUserDto } from './user.schema.js';
 import { OffsetPaginatedResult } from 'src/shared/types/offset-paginated-result.type.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
+import { ListUsersDto } from './dto/list-user.dto.js';
+import { UpdateUserDto } from './dto/update-user.dto.js';
 
 @injectable()
 export class UserService {

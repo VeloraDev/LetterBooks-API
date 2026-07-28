@@ -6,7 +6,9 @@ import {
   UserOrderByWithRelationInput,
   UserWhereInput,
 } from 'src/generated/prisma/models.js';
-import { CreateUserDto, UpdateUserDto, UserSortBy } from './user.schema.js';
+import { CreateUserDto } from './dto/create-user.dto.js';
+import { UserSortBy } from './dto/list-user.dto.js';
+import { UpdateUserDto } from './dto/update-user.dto.js';
 
 @injectable()
 export class UserRepository {
