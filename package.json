@@ -34,7 +34,7 @@
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.5",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^25.3.2",
+    "@types/node": "^26.0.0",
     "@types/pg": "^8.16.0",
     "@vitest/coverage-v8": "^4.0.16",
     "eslint": "^10.0.2",
